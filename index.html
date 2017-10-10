@@ -1,0 +1,429 @@
+<!doctype html>
+<html>
+	<head>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css"
+  integrity="sha512-M2wvCLH6DSRazYeZRIm1JnYyh22purTM+FDB5CsyxtQJYeKq83arPe5wgbNmcFXGqiSH2XR8dT/fJISVA1r/zQ=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"
+  integrity="sha512-lInM/apFSqyy1o6s89K4iQUKg6ppXEgsVxT35HbzUupEVRh2Eu9Wdl4tHj7dZO0s1uvplcYGmt3498TtHq+log=="
+  crossorigin=""></script>
+
+	<style type="text/css">
+	body { 
+		margin: 0; padding: 0;
+	}
+	#work {
+		position: absolute;
+		top: 0px; left: 0px; right: 0px; bottom: 0px;
+		width: 100vw; height: 100vh;
+	}
+
+
+	#control label {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-items: baseline;
+		cursor: pointer;
+		margin-bottom: 0.6em;
+	}
+	#control label:last-child {
+		/*margin-bottom: 0px;*/
+	}
+
+	#work {
+		display: flex;
+		flex-direction: column;
+		justify-content: stretch;
+		align-items: stretch;
+	}
+	#control {
+		flex-grow: 0;
+		/*position: relative;*/
+		padding: 0.6em;
+	}
+	#map {
+		flex-grow: 1;
+		/*position: relative;*/
+	}
+
+	#legend {
+		margin-bottom: 1em;
+	}
+	#legend p {
+		margin-top: 0;
+	}
+	.circ {
+		display: inline-block;
+		border-radius: 10000px;
+		width: 1em;
+		height: 1em;
+		margin-right: 0.4em;
+	}
+	.legend-circs {
+
+	}
+	.legend-circs > div {
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: flex-start;
+	}
+	.white {
+		background-color: #BC86E5;
+	}
+	.coloured {
+		background-color: #F2B928;
+	}
+	.black {
+		background-color: #60B260;
+	}
+	.indian {
+		background-color: #ED7C6C;
+	}
+
+	#letsgo:hover {
+		background-color: white;
+		color: black;
+	}
+	#more-info {
+		border-top: 1px solid #444;
+	}
+	#more-info > div {
+		margin-top: 0.6em;
+	}
+	.full {
+		display: none;
+	}
+
+	.legend-circs {
+		font-size: 0.7em;
+		display: flex;
+		flex-direction: row;
+		justify-content: flex-start;
+		align-items: baseline;
+	}
+	.legend-circs > div {
+		margin-right: 0.4em;
+	}
+	#social-housing {
+		display: flex;
+		flex-direction: row;
+		flex-wrap: wrap;
+		justify-content: space-between;
+		align-items: flex-start;
+		font-size: 0.8em;
+	}
+	#control label {
+		display: inline-flex;
+		border: 1px solid #ccc;
+		padding: 0 0.6em 0.6em 0.6em;
+		margin-bottom: 0;
+	}
+	#control input {
+		padding: 0;
+		/*margin: 0 0 0 0.6em;*/
+	}
+
+	#social-housing {
+		font-size: 0.7rem;
+	}
+
+	#cover {
+		background-color: rgba(0,0,30,0.85);
+		position: absolute;
+		top: 0px; left: 0px; right: 0px; bottom: 0px;
+		display: flex;
+		flex-direction: row;
+		justify-content: center;
+		align-items: flex-start;
+
+		color: white;
+
+		z-index: 20000;
+
+		line-height: 1.8em;
+		font-size: 1em;
+		overflow-y: scroll;
+	}
+	#cover > div {
+		max-width: 30em;
+		padding: 1em;
+	}
+	#letsgo {
+		text-align: center;
+		border: 1px solid white;
+		cursor: pointer;
+		transition: background-color 0.4s;
+		text-transform: uppercase;
+		font-family: Arial, Sans-Serif;
+	}
+
+
+	@media screen and (min-width: 640px) {
+		#control {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
+			align-items: baseline;
+		}
+		#social-housing > label {
+			margin-left: 0.6em;
+		}
+	}
+	@media screen and (min-width: 800px) {
+		#cover {
+			line-height: 1.8em;
+			font-size: 1.4em;
+			align-items: center;
+		}
+		#cover > div {
+			max-width: 30em;			
+		}
+		#letsgo {
+			text-align: center;
+			border: 1px solid white;
+			cursor: pointer;
+			transition: background-color 0.4s;
+			text-transform: uppercase;
+			font-family: Arial, Sans-Serif;
+		}
+
+		#map {
+			position: absolute;
+			top: 0px; left: 0px; right:0px; bottom: 0px;
+			height: 100vh; width: 100vw;
+		}
+		#control {
+			position: absolute;
+			top: 5em;
+			left: 1em;
+			z-index: 1000;
+			background-color: rgba(255,255,255,0.8);
+			border-radius: 1em;
+			border: 1px solid #666;
+
+			flex-grow: 0;
+			max-width: 20em;
+			padding: 1em;
+
+			display: inline-block;
+		}
+
+		#social-housing {
+			display: flex;
+			flex-direction: column;
+			flex-wrap: wrap;
+			justify-content: flex-start;
+			align-items: stretch;
+			font-size: 0.8em;
+		}
+		#social-housing label {
+			display: inline-flex;
+			justify-content: flex-start;
+			margin: 0 0 0.6em 0;
+			padding: 0.6em 0.6em 0.6em 0;
+		}
+		#social-housing span {
+			order: 2;
+		}
+		#social-housing input {
+			order: 0;
+			padding: 0;
+			margin: 0 0.6em 0;
+		}
+		.full {
+			display: inline-block;
+		}
+		#cover {
+			position: fixed;
+			top: 0px; left:0px; bottom: 0px; right: 0px;
+			padding: 1em;
+		}
+
+
+	}
+
+	</style>
+	</head>
+	<body>
+		<div id="work">
+			<div id="map">
+			</div>
+			<div id="control">
+				<div id="legend">
+					<p class="full">Each dot represents 25 households, colour coded by self-identified race (2011 census).</p>
+					<div class="legend-circs">
+						<div><span class="circ white"> </span><span>White</span></div>
+						<div><span class="circ coloured"> </span><span>Coloured</span></div>
+						<div><span class="circ black"> </span><span>Black African</span></div>
+						<div><span class="circ indian"> </span><span>Indian</span></div>
+					</div>	
+				</div>	
+
+				<div id="social-housing">
+					<label><span>Affordable <span class="full"> Housing</span></span>
+					<input type="checkbox" id="affordable-cb" />
+					</label>
+					<label><span>Social <span class="full"> Housing</span></span>
+					<input type="checkbox" id="social-cb" />
+					</label>
+					<label><span>Transitional <span class="full"> Housing</span></span>
+					<input type="checkbox" id="transitional-cb" />
+					</label>
+					<label><span>Future <span class="full"> Housing</span></span>
+					<input type="checkbox" id="future-cb" />
+					</label>				
+				</div>
+			
+				<div id="more-info" class="full">
+					<p>Follow these links for more info...</p>
+					<div><a href="http://www.tda.gov.za/docs/widgets/15/TDA_Affordable_Housing_sites_20092017.pdf" target="new">Affordable Housing Sites Map</a></div>
+ 					<div><a href="http://www.tda.gov.za/en/projects/investment-opportunities/affordable-housing-woodstock-and-saltriver-precinct/" target="new">Affordable Housing: Woodstock and Salt River Precinct</a></div>
+				</div>
+			</div>
+		</div>
+		<div id="cover">
+			<div>
+				<h1>The City of Cape Town's Social Housing Plan</h1>
+				<p>This map shows the racial distribution of Cape Town
+				suburbs. Each dot represents 25 housing units. Purple dots are 'white', yellow are 'coloured', green are 'black africa' and red are 'indian' (2011 self-identified census data).</p>
+				<p>If you wanted to maintain "the spatial legacy of apartheid", where would you locate social housing initiatives?</p>
+				<p>Use the checkboxes to see where the city has placed these initiatives.</p>
+				<div id="letsgo">Got it</div>
+			</div>
+		</div>
+		<script language="javascript">
+document.addEventListener('DOMContentLoaded', function() {
+	var icon = function(name) {
+		return L.icon({
+			iconUrl: name + '.svg',
+			iconSize: [30,50],
+			iconAnchor: [15,48],
+			popupAnchor: [0, -50]
+		});
+	}
+	var map = L.map('map', {maxZoom: 14}).setView([-33.9249, 18.4241], 14);
+
+	L.tileLayer(
+		'//{s}.tiles.mapbox.com/v3/afrith.hfk7dal4/{z}/{x}/{y}.png'
+		, 
+		{
+			 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+		})
+	.addTo(map);
+
+	L.tileLayer(
+		'//dotmap.adrianfrith.com/tiles/race/{z}/{x}/{y}.png'
+		, 
+		{
+			 attribution: '&copy; <a href="http://dotmap.adrianfrith.com">Dotmap Adrian Frith</a>'
+		})
+	.addTo(map);
+
+    		// "//b.tiles.mapbox.com/v3/afrith.hfk7dal4/${z}/${x}/${y}.png",
+    		// "//c.tiles.mapbox.com/v3/afrith.hfk7dal4/${z}/${x}/${y}.png",')
+	// L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+	//     attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+	// }).addTo(map);
+
+	var icons = {
+		"affordable": icon('affordable'),
+		"future": icon('future'),
+		"social": icon("social"),
+		"transitional":icon("transitional")
+	};
+
+	var locs = [
+		['future', 'Canterbury Road', -33.930739,18.421858 ],
+		['affordable', 'Fruit n Veg', -33.930112, 18.424082 ],
+		['affordable', 'New Market Street', -33.926355, 18.435073],
+		['future', 'Pine Road - future', -33.929090, 18.444982],
+		['social', 'Pine Road', -33.930109, 18.444874],
+		['social', 'Dillon Lane', -33.929688, 18.446934],
+		['future', 'Upper Coventry Road', -33.933882, 18.444187],
+		['affordable', 'Woodstock Hospital Park', -33.931665, 18.447684],
+		['affordable', 'Woodstock Hospital', -33.932184, 18.448860],
+		['transitional', 'James Street', -33.930738, 18.455453],
+		['transitional', 'Pickwick Road - transitional', -33.935741, 18.459141],
+		['affordable', 'Pickwick Road', -33.937097, 18.458075],
+		['social', 'Salt River Market', -33.927282, 18.460251]
+
+	];
+
+	var markers = [];
+
+	for (var i=0; i<locs.length; i++) {
+		var l = locs[i];
+		var code = l[0];
+		var name = l[1];
+		var x = l[2]; 
+		var y=l[3];
+		var m = L.marker([x,y], { opacity: 0, icon: icons[code] });
+		m.housingType = code;
+		m.bindPopup(name);
+		m.addTo(map);
+		markers.push(m);
+	}
+
+	var fade = function(ht, fadeOut) {
+		var start = null;
+		var total = 750.0;
+		var step = function(ts) {
+			if (!start) start= ts;
+			var cur = ts - start;
+			var op = Math.min(cur / total, 1.0);
+			if (fadeOut) {
+				op = 1.0 - op;
+			}
+			for (var m of markers) {
+				if (m.housingType==ht) m.setOpacity(op);
+			}
+			if (cur<total) {
+				requestAnimationFrame(step);
+			}
+		};
+
+		requestAnimationFrame(step);
+	}
+	for (var t of ['affordable','social','transitional','future']) {
+		(function(housingType) {
+			// var o = document.getElementById(housingType);
+			// if (!o) {
+			// 	console.log(`Failed to find #${housingType}`);
+			// 	return;
+			// }
+			// o.addEventListener('input', function(evt) {
+			// 	var opacity = o.value / 100.0;
+			// 	for (var m of markers) {
+			// 		if (m.housingType==housingType) m.setOpacity(opacity);
+			// 	}
+			// });
+
+			var o = document.getElementById(housingType + '-cb');
+			o.addEventListener('click', function(evt) {
+				fade(housingType, !o.checked);
+			});
+		})(t);
+	}
+
+	document.getElementById('cover').addEventListener('click', function(evt){ 
+		document.getElementById('cover').remove();
+	});
+
+	var quotes = [
+		"Only a collective effort will undo the legacy of apartheid.",
+		"the responsibility of creating a more integrated Cape Town is not ours alone",
+		"[RDP housing] did not address the spatial legacy of apartheid",
+		"where development takes place, and what development takes place, needs to change if we’re to have a more equitable, efficient city",
+		"Mayor De Lille pledged to tackle Cape Town’s apartheid spatial legacy, and we’ve taken a number of steps to do so",
+		"If we’re going to fully address spatial transformation we have to do it across the entire spectrum",
+		"We’re not debating if the projects should happen, or where they should happen. That’s been decided already, and we need to move forward.",
+		// "the Tafelberg site in Sea Point that would be available for housing development is just 1.1- hectares in size. According to our assessment of the financial modelling, it does not adequately meet the criteria necessary for sustainable affordability. (Helen Zille)",
+	];
+
+
+});
+   	</script>			
+	</body>
+</html>
